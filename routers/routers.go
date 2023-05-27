@@ -2,12 +2,20 @@ package routers
 
 import (
 	"book-keeping-web/utils"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 // InitRouter 初始化路由
 func InitRouter() *gin.Engine {
 	r := gin.Default()
+	// 解决跨域
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:3000"}
+	config.AllowCredentials = true
+	config.AllowHeaders = []string{"Origin", "X-Requested-With", "Content-Type", "Accept", "Set-Cookie"}
+	r.Use(cors.New(config))
+
 	// 初始化
 	user := r.Group("/user")
 	{
