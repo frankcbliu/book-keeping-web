@@ -44,6 +44,16 @@ func (ledger *Ledger) FindLedger() bool {
 	return false
 }
 
+// FindLedgerById 通过ID查找账本
+func (ledger *Ledger) FindLedgerById() bool {
+	SqliteDB.Find(&ledger, "id = ?", ledger.ID)
+	if ledger.ID > 0 {
+		return true
+	}
+	log.Println("[Ledger.FindLedger]", "Not found ledger:", ledger.ID)
+	return false
+}
+
 // ListLedger 查询所有账本
 func (ledger *Ledger) ListLedger(ledgers *[]Ledger) bool {
 	SqliteDB.Find(ledgers, "user_id = ?", ledger.UserId)

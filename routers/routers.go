@@ -35,7 +35,12 @@ func InitRouter() *gin.Engine {
 		subClassification.POST("/list", SubClassificationList)     // 查询子类别
 		subClassification.POST("/delete", SubClassificationDelete) // 删除子类别
 	}
-
+	record := r.Group("/record")
+	{
+		record.Use(utils.CookieCheck())
+		record.POST("/create", RecordCreate) // 创建账单
+		record.POST("/delete", RecordDelete) // 删除账单
+	}
 	// 单接口的登录校验
 	//r.GET("/home", utils.CookieCheck(), func(c *gin.Context) {
 	//	c.JSON(200, gin.H{"data": "Your home page"})

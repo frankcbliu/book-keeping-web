@@ -33,4 +33,8 @@ func InitSqlite() {
 	if err != nil {
 		log.Fatal("failed to migrate Ledger")
 	}
+	err = SqliteDB.AutoMigrate(&Record{})
+	if err != nil {
+		log.Fatal("failed to migrate Ledger")
+	}
 }

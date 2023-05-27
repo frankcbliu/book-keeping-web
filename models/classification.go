@@ -44,6 +44,16 @@ func (cf *Classification) FindClassification() bool {
 	return false
 }
 
+// FindClassificationById 通过ID查找分类
+func (cf *Classification) FindClassificationById() bool {
+	SqliteDB.Find(&cf, "id = ?", cf.ID)
+	if cf.ID > 0 {
+		return true
+	}
+	log.Println("[Classification.FindClassification]", "Not found cf:", cf.ID)
+	return false
+}
+
 // ListClassification 查询所有分类
 func (cf *Classification) ListClassification(classifications *[]Classification) bool {
 	SqliteDB.Where("user_id = ?", cf.UserId).Where("ledger_id = ?", cf.LedgerId).Find(classifications)

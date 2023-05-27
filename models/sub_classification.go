@@ -44,6 +44,16 @@ func (subCf *SubClassification) FindSubClassification() bool {
 	return false
 }
 
+// FindSubClassificationById 查找子类别
+func (subCf *SubClassification) FindSubClassificationById() bool {
+	SqliteDB.Find(&subCf, "id = ?", subCf.ID)
+	if subCf.ID > 0 {
+		return true
+	}
+	log.Println("[SubClassification.FindSubClassification]", "Not found sub_cf:", subCf.ID)
+	return false
+}
+
 // ListSubClassification 查询所有子类别
 func (subCf *SubClassification) ListSubClassification(classifications *[]SubClassification) bool {
 	SqliteDB.Where("user_id = ?", subCf.UserId).Where("classification_id = ?", subCf.ClassificationId).Find(classifications)
