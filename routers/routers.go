@@ -16,11 +16,12 @@ func InitRouter() *gin.Engine {
 	}
 	ledger := r.Group("/ledger")
 	{
+		ledger.Use(utils.CookieCheck())
 		ledger.POST("/create", LedgerCreate) // 创建账本
+		ledger.POST("/list", LedgerList)     // 查询账本
+		ledger.POST("/delete", LedgerDelete) // 删除账本
 	}
-	ledger.Use(utils.CookieCheck())
 
-	//user.Use(utils.CookieCheck()) // 需要登录校验的接口的使用方法
 	// 单接口的登录校验
 	//r.GET("/home", utils.CookieCheck(), func(c *gin.Context) {
 	//	c.JSON(200, gin.H{"data": "Your home page"})
