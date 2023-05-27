@@ -7,6 +7,7 @@ import (
 	"log"
 )
 
+// User 用户
 type User struct {
 	gorm.Model
 

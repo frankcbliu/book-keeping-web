@@ -1,7 +1,7 @@
 package models
 
 import (
-	"go-gin-gorm-demo/conf"
+	"book-keeping-web/conf"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
@@ -20,5 +20,9 @@ func InitSqlite() {
 	err = SqliteDB.AutoMigrate(&User{})
 	if err != nil {
 		log.Fatal("failed to migrate User")
+	}
+	err = SqliteDB.AutoMigrate(&Ledger{})
+	if err != nil {
+		log.Fatal("failed to migrate Ledger")
 	}
 }

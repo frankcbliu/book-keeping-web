@@ -1,4 +1,4 @@
-module go-gin-gorm-demo
+module book-keeping-web
 
 go 1.19
 

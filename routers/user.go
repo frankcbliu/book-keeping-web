@@ -1,9 +1,9 @@
 package routers
 
 import (
+	"book-keeping-web/models"
+	"book-keeping-web/utils"
 	"github.com/gin-gonic/gin"
-	"go-gin-gorm-demo/models"
-	"go-gin-gorm-demo/utils"
 )
 
 // UserRegister 注册接口
@@ -28,6 +28,6 @@ func UserLogin(c *gin.Context) {
 		utils.FailMessage(c, "login fail")
 		return
 	}
-	utils.SetCookie(c, userName)
+	utils.SetCookie(c, userName, user.ID)
 	utils.SuccessMessage(c, "login success")
 }

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"go-gin-gorm-demo/conf"
-	"go-gin-gorm-demo/models"
-	"go-gin-gorm-demo/routers"
+	"book-keeping-web/conf"
+	"book-keeping-web/models"
+	"book-keeping-web/routers"
 )
 
 func main() {

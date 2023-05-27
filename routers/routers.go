@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"book-keeping-web/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,6 +14,12 @@ func InitRouter() *gin.Engine {
 		user.POST("/register", UserRegister) // 注册
 		user.POST("/login", UserLogin)       // 登录
 	}
+	ledger := r.Group("/ledger")
+	{
+		ledger.POST("/create", LedgerCreate) // 创建账本
+	}
+	ledger.Use(utils.CookieCheck())
+
 	//user.Use(utils.CookieCheck()) // 需要登录校验的接口的使用方法
 	// 单接口的登录校验
 	//r.GET("/home", utils.CookieCheck(), func(c *gin.Context) {
