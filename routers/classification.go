@@ -8,7 +8,7 @@ import (
 
 type ClassificationReq struct {
 	Name     string `json:"name" binding:"omitempty"`
-	LedgerId int    `json:"ledger_id"`
+	LedgerId int    `json:"ledger_id" binding:"required"`
 }
 
 // ClassificationCreate 为当前用户创建分类

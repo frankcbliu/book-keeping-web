@@ -7,7 +7,7 @@ import (
 )
 
 type LedgerReq struct {
-	Name string `json:"name"`
+	Name string `json:"name" binding:"required"`
 }
 
 // LedgerCreate 为当前用户创建账本

@@ -12,7 +12,7 @@ interface LedgerItem {
     name: string;
 }
 
-
+// 账本-分类 页面
 const Main: React.FC = () => {
 
     const [data, setData] = useState<LedgerItem[]>([]);

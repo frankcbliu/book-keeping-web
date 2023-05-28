@@ -40,7 +40,7 @@ func SubClassificationList(c *gin.Context) {
 		return
 	}
 	res := classification.ToSubClassificationView(&classifications)
-	utils.Success(c, gin.H{"classifications": res}, "list classifications success")
+	utils.Success(c, gin.H{"sub_classifications": res}, "list classifications success")
 }
 
 // SubClassificationDelete 删除分类

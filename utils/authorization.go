@@ -11,8 +11,8 @@ import (
 
 const (
 	Authorization    = "Authorization"
-	TokenTime        = 30 // 默认 30 分钟
-	RefreshTokenTime = 5  // 剩余时间只剩 5 分钟以内进行刷新
+	TokenTime        = 240 // 默认 120 分钟
+	RefreshTokenTime = 60  // 剩余时间只剩 60 分钟以内进行刷新
 )
 
 func SetAuthorization(c *gin.Context, userName string, userId int) {

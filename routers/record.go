@@ -9,12 +9,12 @@ import (
 )
 
 type RecordReq struct {
-	ClassificationId    int    `json:"classification_id"`                         // 分类id
+	ClassificationId    int    `json:"classification_id" binding:"required"`      // 分类id
 	SubClassificationId int    `json:"sub_classification_id" binding:"omitempty"` // 子类别id
 	Note                string `json:"note" binding:"omitempty"`                  // 备注
 	Type                string `json:"type"`                                      // 类型
-	Amount              string `json:"amount"`                                    // 金额
-	ConsumptionTime     string `json:"consumption_time"`                          // 消费时间
+	Amount              string `json:"amount" binding:"required"`                 // 金额
+	ConsumptionTime     string `json:"consumption_time" binding:"required"`       // 消费时间
 }
 
 // RecordCreate 为当前用户创建分类

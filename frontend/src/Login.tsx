@@ -12,6 +12,7 @@ const tailLayout = {
     wrapperCol: {span: 24},
 };
 
+// 登录页面
 const Login: React.FC = () => {
     const navigate = useNavigate()
 
@@ -19,7 +20,7 @@ const Login: React.FC = () => {
         axios.post<[]>("/user/login", values).then((response) => {
             const authorization = response.headers["authorization"]; // 获取 Set-Cookie 头部
             localStorage.setItem("authorization", authorization)
-            navigate('/record')
+            navigate('/ledger')
         });
     };
 

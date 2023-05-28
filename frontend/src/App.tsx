@@ -8,7 +8,7 @@ function App() {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Login />} />
-                <Route path="/record" element={<Main />} />
+                <Route path="/ledger" element={<Main />} />
             </Routes>
         </BrowserRouter>
     );
