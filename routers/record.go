@@ -9,50 +9,29 @@ import (
 )
 
 type RecordReq struct {
-	ClassificationId    int       // 分类id
-	SubClassificationId int       // 子类别id
-	Note                string    // 备注
-	Type                string    // 类型
-	Amount              string    // 金额
-	ConsumptionTime     time.Time // 消费时间
-}
-
-func (req *RecordReq) ParseRequest(c *gin.Context) bool {
-	req.Note = c.PostForm("note")
-	req.Type = c.PostForm("type")
-	req.Amount = c.PostForm("amount")
-	consumptionTime := c.PostForm("consumption_time")
-	if len(req.Amount) <= 0 || len(consumptionTime) <= 0 {
-		utils.FailMessage(c, "amount is empty or consumption_time is empty.")
-		return false
-	}
-	// 解析id
-	id, err := strconv.Atoi(c.PostForm("classification_id"))
-	if err != nil {
-		utils.FailMessage(c, "parse classification_id error.")
-		return false
-	}
-	req.ClassificationId = id
-	// 解析时间
-	req.ConsumptionTime, err = time.Parse("2006-01-02 15:04:05", consumptionTime)
-	if err != nil {
-		utils.FailMessage(c, "parse consumption_time error.")
-		return false
-	}
-	// 解析子分类id，可以不携带
-	id, err = strconv.Atoi(c.PostForm("sub_classification_id"))
-	req.SubClassificationId = id
-	return true
+	ClassificationId    int    `json:"classification_id"`                         // 分类id
+	SubClassificationId int    `json:"sub_classification_id" binding:"omitempty"` // 子类别id
+	Note                string `json:"note" binding:"omitempty"`                  // 备注
+	Type                string `json:"type"`                                      // 类型
+	Amount              string `json:"amount"`                                    // 金额
+	ConsumptionTime     string `json:"consumption_time"`                          // 消费时间
 }
 
 // RecordCreate 为当前用户创建分类
 func RecordCreate(c *gin.Context) {
 	req := RecordReq{}
-	if !req.ParseRequest(c) {
+	if err := c.BindJSON(&req); err != nil {
+		utils.FailMessage(c, "parse param error")
+		return
+	}
+	// 解析时间
+	consumptionTime, err := time.Parse("2006-01-02 15:04:05", req.ConsumptionTime)
+	if err != nil {
+		utils.FailMessage(c, "parse consumption_time error.")
 		return
 	}
 	record := models.Record{Amount: req.Amount, UserId: c.GetInt("UserId"), ClassificationId: req.ClassificationId,
-		Note: req.Note, Type: req.Type, ConsumptionTime: req.ConsumptionTime, SubClassificationId: req.SubClassificationId}
+		Note: req.Note, Type: req.Type, ConsumptionTime: consumptionTime, SubClassificationId: req.SubClassificationId}
 	if !record.CreateRecord() {
 		utils.FailMessage(c, "create record error")
 		return

@@ -40,6 +40,6 @@ func UserLogin(c *gin.Context) {
 		utils.FailMessage(c, "login fail")
 		return
 	}
-	utils.SetCookie(c, req.Username, user.ID)
+	utils.SetAuthorization(c, req.Username, user.ID)
 	utils.SuccessMessage(c, "login success")
 }

@@ -4,40 +4,18 @@ import (
 	"book-keeping-web/models"
 	"book-keeping-web/utils"
 	"github.com/gin-gonic/gin"
-	"strconv"
 )
 
 type ClassificationReq struct {
-	Name     string
-	LedgerId int
-	// 是否需要
-	needName     bool
-	needLedgerId bool
-}
-
-func (req *ClassificationReq) ParseRequest(c *gin.Context) bool {
-	if req.needName {
-		req.Name = c.PostForm("name")
-		if len(req.Name) <= 0 {
-			utils.FailMessage(c, "classification name is empty.")
-			return false
-		}
-	}
-	if req.needLedgerId {
-		ledgerId, err := strconv.Atoi(c.PostForm("ledger_id"))
-		if err != nil {
-			utils.FailMessage(c, "parse ledger_id error.")
-			return false
-		}
-		req.LedgerId = ledgerId
-	}
-	return true
+	Name     string `json:"name" binding:"omitempty"`
+	LedgerId int    `json:"ledger_id"`
 }
 
 // ClassificationCreate 为当前用户创建分类
 func ClassificationCreate(c *gin.Context) {
-	req := ClassificationReq{needName: true, needLedgerId: true}
-	if !req.ParseRequest(c) {
+	req := ClassificationReq{}
+	if err := c.BindJSON(&req); err != nil {
+		utils.FailMessage(c, "parse param error")
 		return
 	}
 	classification := models.Classification{Name: req.Name, UserId: c.GetInt("UserId"), LedgerId: req.LedgerId}
@@ -50,8 +28,9 @@ func ClassificationCreate(c *gin.Context) {
 
 // ClassificationList 查询当前用户的所有分类
 func ClassificationList(c *gin.Context) {
-	req := ClassificationReq{needLedgerId: true}
-	if !req.ParseRequest(c) {
+	req := ClassificationReq{}
+	if err := c.BindJSON(&req); err != nil {
+		utils.FailMessage(c, "parse param error")
 		return
 	}
 	var classifications []models.Classification
@@ -66,8 +45,9 @@ func ClassificationList(c *gin.Context) {
 
 // ClassificationDelete 删除分类
 func ClassificationDelete(c *gin.Context) {
-	req := ClassificationReq{needName: true, needLedgerId: true}
-	if !req.ParseRequest(c) {
+	req := ClassificationReq{}
+	if err := c.BindJSON(&req); err != nil {
+		utils.FailMessage(c, "parse param error")
 		return
 	}
 	classification := models.Classification{Name: req.Name, UserId: c.GetInt("UserId"), LedgerId: req.LedgerId}

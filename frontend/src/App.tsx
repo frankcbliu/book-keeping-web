@@ -2,13 +2,13 @@ import React from 'react';
 import './App.css';
 import Login from "./Login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Record from "./Record";
+import Main from "./Main";
 function App() {
     return (
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Login />} />
-                <Route path="/record" element={<Record />} />
+                <Route path="/record" element={<Main />} />
             </Routes>
         </BrowserRouter>
     );

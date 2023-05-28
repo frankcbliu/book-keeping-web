@@ -12,8 +12,10 @@ func InitRouter() *gin.Engine {
 	// 解决跨域
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"http://localhost:3000"}
+	//config.AllowAllOrigins = true
 	config.AllowCredentials = true
-	config.AllowHeaders = []string{"Origin", "X-Requested-With", "Content-Type", "Accept", "Set-Cookie"}
+	config.AllowMethods = []string{"GET", "POST", "OPTIONS"}
+	config.AllowHeaders = []string{"Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"}
 	r.Use(cors.New(config))
 
 	// 初始化

@@ -10,24 +10,22 @@ import (
 )
 
 const (
-	TOKEN            = "token"
+	Authorization    = "Authorization"
 	TokenTime        = 30 // 默认 30 分钟
 	RefreshTokenTime = 5  // 剩余时间只剩 5 分钟以内进行刷新
 )
 
-func SetCookie(c *gin.Context, userName string, userId int) {
+func SetAuthorization(c *gin.Context, userName string, userId int) {
 	token := generateToken(userName, userId)
-	c.SetCookie(TOKEN, token, 0, "/", "localhost", false, true)
+	c.Header(Authorization, token)
 }
 
 func CookieCheck() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Get cookie
-		if token, err := c.Cookie(TOKEN); err == nil {
-			if CheckToken(c, token) {
-				c.Next()
-				return
-			}
+		if token := c.Request.Header.Get(Authorization); CheckToken(c, token) {
+			c.Next()
+			return
 		}
 		// Cookie verification failed
 		c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden with no cookie"})
@@ -66,12 +64,16 @@ func CheckToken(c *gin.Context, tokenString string) bool {
 	token, err := jwt.ParseWithClaims(tokenString, &myCustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(conf.Setting.Cookie.SecretKey), nil
 	})
+	if err != nil {
+		log.Println("Parse token error: ", tokenString)
+		return false
+	}
 	if claims, ok := token.Claims.(*myCustomClaims); ok && token.Valid {
 		c.Set("UserId", claims.UserId)
 		log.Println(claims.UserName, " expire_time: ", claims.RegisteredClaims.ExpiresAt)
 		// 如果有效期少于5min，自动延长
 		if claims.RegisteredClaims.ExpiresAt.Sub(time.Now()) <= RefreshTokenTime*time.Minute {
-			SetCookie(c, claims.UserName, claims.UserId)
+			SetAuthorization(c, claims.UserName, claims.UserId)
 		}
 	} else {
 		log.Println(err)

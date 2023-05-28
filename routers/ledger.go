@@ -6,14 +6,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type LedgerReq struct {
+	Name string `json:"name"`
+}
+
 // LedgerCreate 为当前用户创建账本
 func LedgerCreate(c *gin.Context) {
-	name := c.PostForm("name")
-	if len(name) <= 0 {
-		utils.FailMessage(c, "ledger name is empty.")
+	req := LedgerReq{}
+	if err := c.BindJSON(&req); err != nil {
+		utils.FailMessage(c, "parse param error")
 		return
 	}
-	ledger := models.Ledger{Name: name, UserId: c.GetInt("UserId")}
+	ledger := models.Ledger{Name: req.Name, UserId: c.GetInt("UserId")}
 	if !ledger.CreateLedger() {
 		utils.FailMessage(c, "create ledger error")
 		return
@@ -35,12 +39,12 @@ func LedgerList(c *gin.Context) {
 
 // LedgerDelete 删除账本
 func LedgerDelete(c *gin.Context) {
-	name := c.PostForm("name")
-	if len(name) <= 0 {
-		utils.FailMessage(c, "ledger name is empty.")
+	req := LedgerReq{}
+	if err := c.BindJSON(&req); err != nil {
+		utils.FailMessage(c, "parse param error")
 		return
 	}
-	ledger := models.Ledger{Name: name, UserId: c.GetInt("UserId")}
+	ledger := models.Ledger{Name: req.Name, UserId: c.GetInt("UserId")}
 	if !ledger.DeleteLedger() {
 		utils.FailMessage(c, "delete ledger error")
 		return

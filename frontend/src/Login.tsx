@@ -1,8 +1,7 @@
 import React from 'react';
 import {Button, Form, Input} from 'antd';
-import {API_BASE_URL, AXIOS_CONFIG} from "./constants";
 import {useNavigate} from "react-router-dom";
-import axios, {AxiosResponse} from "axios";
+import axios from "axios";
 
 const layout = {
     labelCol: {span: 24},
@@ -17,41 +16,16 @@ const Login: React.FC = () => {
     const navigate = useNavigate()
 
     const onFinish = async (values: any) => {
-        // try {
-        //     const response = await fetch(API_BASE_URL + "/user/login", {
-        //         method: 'POST',
-        //         headers: {'Content-Type': 'application/json'},
-        //         body: JSON.stringify(values),
-        //     });
-        //
-        //     if (response.ok) {
-        //         console.log('Login successful');
-        //         navigate('/record')
-        //     } else {
-        //         console.log('Login failed');
-        //     }
-        // } catch (error) {
-        //     console.error('Login error:', error);
-        // }
-        axios.post<[]>(API_BASE_URL + "/user/login", values,  {
-            withCredentials: true, // 设置 withCredentials 选项
-            responseType: "text", // 设置响应类型为 "text"
-        }).then((response) => {
-            console.log('Login successful');
-            console.log(response.headers)
-            const setCookie = response.headers["set-cookie"]; // 获取 Set-Cookie 头部
-            console.log(setCookie);
-            if (setCookie) {
-                const cookies = setCookie.map((cookie: string) => cookie.split(";")[0]).join(";"); // 获取 cookie
-                console.log(cookies);
-            }
-            console.log(response.data);
-            // navigate('/record')
+        axios.post<[]>("/user/login", values).then((response) => {
+            const authorization = response.headers["authorization"]; // 获取 Set-Cookie 头部
+            localStorage.setItem("authorization", authorization)
+            navigate('/record')
         });
     };
 
 
     const onFinishFailed = (errorInfo: any) => {
+        localStorage.clear()
         console.log('Failed:', errorInfo);
     };
 
