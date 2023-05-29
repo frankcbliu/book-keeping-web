@@ -6,3 +6,5 @@ services:
     build: .
     ports:
       - "9988:9988"
+    volumes:
+      - /root/book-keeping-docker/book-keeping-web/test.db:/app/test.db
