@@ -1,5 +1,5 @@
 # 第一阶段：构建 Golang 二进制文件
-FROM golang:latest AS builder
+FROM golang:1.20.4-alpine3.18 AS builder
 
 ENV GOPROXY=https://goproxy.cn
 
@@ -13,7 +13,7 @@ WORKDIR /app
 RUN go build -o main .
 
 # 第二阶段：构建 Node 项目
-FROM node:latest AS frontend
+FROM node:16-airpine AS frontend
 
 # 安装 Yarn
 RUN curl -o- -L https://yarnpkg.com/install.sh | bash
