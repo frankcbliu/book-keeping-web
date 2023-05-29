@@ -132,12 +132,16 @@ const Classification: React.FC<Props> = ({ledgerId}) => {
     };
 
     return (
-        <div style={{minHeight: "100%"}}>
+        <div style={{backgroundColor: colorBgContainer, marginTop: 16}}>
             {contextHolder}
             {rows.map((row, rowIndex) => (
-                <Row key={rowIndex} gutter={[16, 16]} style={{backgroundColor: colorBgContainer, padding: "10px"}}>
+                <Row key={rowIndex} style={{
+                    backgroundColor: colorBgContainer, marginBottom: 16,
+                    padding: "0px 16px"
+                }}
+                     justify={"space-between"} align={"middle"}>
                     {row.map((item, itemIndex) => (
-                        <Col key={itemIndex} span={12}>
+                        <Col key={itemIndex} span={11}>
                             <Card id={item.id.toString()} title={item.name}
                                   onClick={(e) => handleCard(item.id)}>Money, 占空</Card>
                         </Col>

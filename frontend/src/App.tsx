@@ -1,16 +1,17 @@
 import React from 'react';
 import './App.css';
 import Login from "./Login";
-import { HashRouter, Routes, Route } from "react-router-dom";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Main from "./Main";
+
 function App() {
     return (
-        <HashRouter>
+        <BrowserRouter>
             <Routes>
-                <Route path="*" element={<Login />} />
-                <Route path="/ledger" element={<Main />} />
+                <Route path="*" element={<Login/>}/>
+                <Route path="/main/*" element={<Main/>}/>
             </Routes>
-        </HashRouter>
+        </BrowserRouter>
     );
 }
 

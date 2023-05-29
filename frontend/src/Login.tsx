@@ -2,6 +2,7 @@ import React from 'react';
 import {Button, Form, Input} from 'antd';
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
+import {UPDATE_CONFIG} from "./constants";
 
 const layout = {
     labelCol: {span: 24},
@@ -19,8 +20,8 @@ const Login: React.FC = () => {
     const onFinish = async (values: any) => {
         axios.post<[]>("/user/login", values).then((response) => {
             const authorization = response.headers["authorization"]; // 获取 Set-Cookie 头部
-            localStorage.setItem("authorization", authorization)
-            navigate('/ledger')
+            UPDATE_CONFIG(authorization)
+            navigate('/main')
         });
     };
 

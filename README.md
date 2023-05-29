@@ -7,6 +7,7 @@
 - [x] 支持 docker-compose 构建部署
   - 启动方法: `docker-compose -d up`
 - [x] 完成部署构建流程
+- [x] 修复前端样式
 
 ## v0.2 - 2023年05月28日
 
