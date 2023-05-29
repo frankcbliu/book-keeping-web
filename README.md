@@ -4,8 +4,9 @@
 
 ## v0.3 - 2023年05月29日
 
-- [ ] 支持 docker-compose 构建部署
-- [ ] 完成部署构建流程
+- [x] 支持 docker-compose 构建部署
+  - 启动方法: `docker-compose -d up`
+- [x] 完成部署构建流程
 
 ## v0.2 - 2023年05月28日
 
