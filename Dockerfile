@@ -1,8 +1,11 @@
 # 第一阶段：构建 Node 项目
 FROM node:16 AS frontend
 
-# 安装 Yarn
-RUN curl -o- -L https://yarnpkg.com/install.sh | bash
+# 设置要安装的 Yarn 版本
+ENV YARN_VERSION 1.22.19
+
+# 安装指定版本的 Yarn
+RUN curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version $YARN_VERSION
 
 # 将当前目录复制到 Docker 镜像中的 /app 目录
 COPY ./frontend /app
