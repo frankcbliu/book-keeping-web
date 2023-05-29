@@ -61,6 +61,11 @@ const Classification: React.FC<Props> = ({ledgerId}) => {
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [data, setData] = useState<FormDataItem>(
         {data_type: "expense", consumption_time: dayjs()});
+    const rows = splitArray(classification, 2); // 将数据源分成多个数组，每个数组包含2个元素
+    const {
+        token: {colorBgContainer},
+    } = theme.useToken();
+
 
     useEffect(() => {
         if (!ledgerId)
@@ -81,22 +86,15 @@ const Classification: React.FC<Props> = ({ledgerId}) => {
         });
     }, [data?.cur_classification_id])
 
-    const rows = splitArray(classification, 2); // 将数据源分成多个数组，每个数组包含2个元素
-    const {
-        token: {colorBgContainer},
-    } = theme.useToken();
-
 
     const handleCard = (id: number) => {
-        showModal()
-        setData({...data, cur_classification_id: id, consumption_time: dayjs()})
-        console.log("set cf id", id)
-    };
-
-    const showModal = () => {
+        // 打开 modal
         setOpen(true);
+        // 初始化
+        setData({...data, cur_classification_id: id, consumption_time: dayjs()})
     };
 
+    // 创建账单记录
     const handleOk = () => {
         axios.post("/record/create", {
             "classification_id": data.cur_classification_id,
@@ -107,7 +105,6 @@ const Classification: React.FC<Props> = ({ledgerId}) => {
             "consumption_time": data.consumption_time?.format("YYYY-MM-DD HH:mm:ss")
         }, AXIOS_CONFIG).then((response) => {
             const code = response.data["code"]
-            console.log(code)
             if (code == 0) {
                 messageApi.open({
                     type: 'success',
@@ -130,22 +127,9 @@ const Classification: React.FC<Props> = ({ledgerId}) => {
         });
     };
 
-    const handleCancel = () => {
-        console.log('Clicked cancel button');
-        setOpen(false);
-    };
-
     const handleSubCf = (e: RadioChangeEvent) => {
         setData({...data, cur_sub_classification_id: e.target.value})
     };
-
-    const handleType = (value: string) => {
-        setData({...data, data_type: value})
-    }
-
-    const handleAmount = (value: number | null) => {
-        setData({...data, amount: value})
-    }
 
     return (
         <div style={{minHeight: "100%"}}>
@@ -165,7 +149,9 @@ const Classification: React.FC<Props> = ({ledgerId}) => {
                 open={open}
                 onOk={handleOk}
                 confirmLoading={confirmLoading}
-                onCancel={handleCancel}
+                onCancel={() => {
+                    setOpen(false);
+                }}
             >
                 <Form
                     labelCol={{span: 4}}
@@ -176,19 +162,29 @@ const Classification: React.FC<Props> = ({ledgerId}) => {
                     <Form.Item label="交易信息">
                         <Space direction="horizontal">
                             <Space.Compact>
-                                <Select value={data.data_type} onChange={handleType}>
+                                <Select value={data.data_type} onChange={(value) => {
+                                    setData({...data, data_type: value})
+                                }}>
                                     <Select.Option value="expense">支出</Select.Option>
                                     <Select.Option value="income">收入</Select.Option>
                                 </Select>
                             </Space.Compact>
                             <Space.Compact>
-                                <DatePicker value={data.consumption_time}/>
+                                <DatePicker value={data.consumption_time} onChange={(e) => {
+                                    if (e) setData({...data, consumption_time: e})
+                                }}/>
                             </Space.Compact>
-                            <TimePicker value={data.consumption_time}/>
+                            <Space.Compact>
+                                <TimePicker value={data.consumption_time} onChange={(e) => {
+                                    if (e) setData({...data, consumption_time: e})
+                                }}/>
+                            </Space.Compact>
                         </Space>
                     </Form.Item>
                     <Form.Item label="金额">
-                        <InputNumber addonAfter="￥" value={data.amount} onChange={handleAmount}/>
+                        <InputNumber addonAfter="￥" value={data.amount} onChange={(value) => {
+                            setData({...data, amount: value})
+                        }}/>
                     </Form.Item>
                     <Form.Item label="子类别">
                         <Radio.Group onChange={handleSubCf} value={data.cur_sub_classification_id}
@@ -200,7 +196,7 @@ const Classification: React.FC<Props> = ({ledgerId}) => {
                     </Form.Item>
                     <Form.Item label="更多信息">
                         <TextArea rows={2} placeholder="备注" value={data.note}
-                                  onChange={(e) => data.note = e.target.value}/>
+                                  onChange={(e) => setData({...data, note: e.target.value})}/>
                     </Form.Item>
                 </Form>
             </Modal>

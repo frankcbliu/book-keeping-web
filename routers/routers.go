@@ -17,7 +17,6 @@ func InitRouter() *gin.Engine {
 	config.AllowMethods = []string{"GET", "POST", "OPTIONS"}
 	config.AllowHeaders = []string{"Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"}
 	r.Use(cors.New(config))
-
 	// 初始化
 	user := r.Group("/user")
 	{

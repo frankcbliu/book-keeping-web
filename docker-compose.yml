@@ -1,0 +1,8 @@
+version: '3.0'
+
+services:
+  # Gin Web 服务器容器
+  book-keeping:
+    build: .
+    ports:
+      - "9988:8080"
