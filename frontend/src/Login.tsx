@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Form, Input, message } from 'antd';
 import { useNavigate } from "react-router-dom";
 import userApi from "./api/user"
+import {RoutePath} from "./constants";
 
 const layout = {
     labelCol: { span: 24 },
@@ -19,7 +20,7 @@ const Login: React.FC = () => {
     const onFinish = async (params: any) => {
         userApi.userLogin(params).then(() => {
             message.success('登录成功')
-            navigate('/main')
+            navigate(RoutePath.PATH_PREFIX_MAIN)
         }).catch((err) => {
             message.error(err)
         })

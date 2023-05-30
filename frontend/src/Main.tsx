@@ -4,6 +4,7 @@ import Classification from "./Classification";
 import Record from "./Record";
 import {Route, Routes, useNavigate} from "react-router-dom";
 import ledgerApi from './api/ledger';
+import {RoutePath} from './constants'
 
 const {Header, Content, Footer} = Layout;
 
@@ -26,7 +27,7 @@ const Main: React.FC = () => {
 
     useEffect(() => {
         ledgerApi.ledgerList().then((res: any) => {
-            const {ledgers} = res
+            const {ledgers} = res.data
             setData(ledgers);
             setLedgerId(ledgers[0].id)
             setSelectedKey([ledgers[0].id.toString()])
@@ -46,7 +47,7 @@ const Main: React.FC = () => {
                     key: 'app',
                 }
             ])
-            navigate("/main/ledger")
+            navigate(RoutePath.PATH_LEDGER)
         });
     }, []);
 
@@ -57,10 +58,10 @@ const Main: React.FC = () => {
     const handleClick = (event: any) => {
         setSelectedKey([event.key])
         if (event.key === "record")
-            navigate("/main/record")
+            navigate(RoutePath.PATH_RECORD)
         else { // 走账本
             setLedgerId(parseInt(event.key))
-            navigate("/main/ledger")
+            navigate(RoutePath.PATH_LEDGER)
         }
     };
 

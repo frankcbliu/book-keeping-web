@@ -58,7 +58,7 @@ const Classification: React.FC<Props> = ({ ledgerId }) => {
     const [sub_classification, setSubClassification] = useState<SubClassificationItem[]>([]);
     // 模态
     const [open, setOpen] = useState(false);
-    const [data, setData] = useState<FormDataItem>({ data_type: RecordType.expence, consumption_time: dayjs() });
+    const [data, setData] = useState<FormDataItem>({ data_type: RecordType.expense, consumption_time: dayjs() });
     const rows = splitArray(classification, 2); // 将数据源分成多个数组，每个数组包含2个元素
     const {
         token: { colorBgContainer },
@@ -152,7 +152,7 @@ const Classification: React.FC<Props> = ({ ledgerId }) => {
                                 <Select value={data.data_type} onChange={(value) => {
                                     setData({ ...data, data_type: value })
                                 }}>
-                                    <Select.Option value={RecordType.expence}>{RecordType.expence}</Select.Option>
+                                    <Select.Option value={RecordType.expense}>{RecordType.expense}</Select.Option>
                                     <Select.Option value={RecordType.income}>{RecordType.income}</Select.Option>
                                 </Select>
                             </Space.Compact>
