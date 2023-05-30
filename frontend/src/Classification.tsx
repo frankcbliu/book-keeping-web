@@ -169,7 +169,7 @@ const Classification: React.FC<Props> = ({ ledgerId }) => {
                         </Space>
                     </Form.Item>
                     <Form.Item label="金额">
-                        <InputNumber type={"number"} addonAfter="￥" value={data.amount} onChange={(value) => {
+                        <InputNumber type={"number"} pattern="[0-9]*" addonAfter="￥" value={data.amount} onChange={(value) => {
                             setData({ ...data, amount: value })
                         }} />
                     </Form.Item>
