@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Layout, Menu, MenuProps, theme } from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Layout, Menu, MenuProps, theme} from 'antd';
 import Classification from "./Classification";
 import Record from "./Record";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import {Route, Routes, useNavigate} from "react-router-dom";
 import ledgerApi from './api/ledger';
-const { Header, Content, Footer } = Layout;
+
+const {Header, Content, Footer} = Layout;
 
 interface LedgerItem {
     id: number;
@@ -24,14 +25,14 @@ const Main: React.FC = () => {
 
 
     useEffect(() => {
-        ledgerApi.ledgerList().then((response) => {
-            const data = response.data["ledgers"] as LedgerItem[];
-            setData(data);
-            setLedgerId(data[0].id)
-            setSelectedKey([data[0].id.toString()])
-            setMenus([...Array.from({ length: data.length }, (_, index) => {
-                const key = data[index].id.toString();
-                const name = data[index].name
+        ledgerApi.ledgerList().then((res: any) => {
+            const {ledgers} = res
+            setData(ledgers);
+            setLedgerId(ledgers[0].id)
+            setSelectedKey([ledgers[0].id.toString()])
+            setMenus([...Array.from({length: ledgers.length}, (_, index) => {
+                const key = ledgers[index].id.toString();
+                const name = ledgers[index].name
                 return {
                     key,
                     label: `${name}`,
@@ -40,17 +41,17 @@ const Main: React.FC = () => {
                 label: '账单',
                 key: 'record',
             },
-            {
-                label: '待使用',
-                key: 'app',
-            }
+                {
+                    label: '待使用',
+                    key: 'app',
+                }
             ])
             navigate("/main/ledger")
         });
     }, []);
 
     const {
-        token: { colorBgContainer },
+        token: {colorBgContainer},
     } = theme.useToken();
 
     const handleClick = (event: any) => {
@@ -65,7 +66,7 @@ const Main: React.FC = () => {
 
 
     return (
-        <Layout style={{ minHeight: '100vh', overflow: "hidden", backgroundColor: colorBgContainer }}>
+        <Layout style={{minHeight: '100vh', overflow: "hidden", backgroundColor: colorBgContainer}}>
             <Header style={headerStyle}>
                 <Menu
                     theme="dark"
@@ -77,8 +78,8 @@ const Main: React.FC = () => {
             </Header>
             <Content style={contentStyle}>
                 <Routes>
-                    <Route path="/ledger" element={<Classification ledgerId={ledgerId} />} />
-                    <Route path="/record" element={<Record />} />
+                    <Route path="/ledger" element={<Classification ledgerId={ledgerId}/>}/>
+                    <Route path="/record" element={<Record/>}/>
                 </Routes>
             </Content>
             <Footer style={footerStyle}>Ant Design ©2023 Created by Ant
