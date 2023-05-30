@@ -11,8 +11,8 @@ import (
 
 const (
 	Authorization    = "Authorization"
-	TokenTime        = 240 // 默认 120 分钟
-	RefreshTokenTime = 60  // 剩余时间只剩 60 分钟以内进行刷新
+	TokenTime        = 30 // 默认 120 分钟
+	RefreshTokenTime = 10 // 剩余时间只剩 60 分钟以内进行刷新
 )
 
 func SetAuthorization(c *gin.Context, userName string, userId int) {
@@ -65,7 +65,7 @@ func CheckToken(c *gin.Context, tokenString string) bool {
 		return []byte(conf.Setting.Cookie.SecretKey), nil
 	})
 	if err != nil {
-		log.Println("Parse token error: ", tokenString)
+		log.Println("token:[", tokenString, "] Parse error: ", err)
 		return false
 	}
 	if claims, ok := token.Claims.(*myCustomClaims); ok && token.Valid {

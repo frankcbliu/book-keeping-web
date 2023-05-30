@@ -40,7 +40,7 @@ func LedgerList(c *gin.Context) {
 // LedgerDelete 删除账本
 func LedgerDelete(c *gin.Context) {
 	req := LedgerReq{}
-	if err := c.BindJSON(&req); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil {
 		utils.FailMessage(c, "parse param error")
 		return
 	}

@@ -4,7 +4,6 @@ import (
 	"book-keeping-web/models"
 	"book-keeping-web/utils"
 	"github.com/gin-gonic/gin"
-	"strconv"
 	"time"
 )
 
@@ -20,7 +19,7 @@ type RecordReq struct {
 // RecordCreate 为当前用户创建分类
 func RecordCreate(c *gin.Context) {
 	req := RecordReq{}
-	if err := c.BindJSON(&req); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil {
 		utils.FailMessage(c, "parse param error")
 		return
 	}
@@ -39,15 +38,19 @@ func RecordCreate(c *gin.Context) {
 	utils.SuccessMessage(c, "create record success")
 }
 
-// RecordDelete 删除账本
+type RecordDeleteReq struct {
+	RecordId int `json:"record_id" binding:"required"`
+}
+
+// RecordDelete 删除账本Ï
 func RecordDelete(c *gin.Context) {
-	id, err := strconv.Atoi(c.PostForm("record_id"))
-	if err != nil {
-		utils.FailMessage(c, "parse record_id error.")
+	req := RecordDeleteReq{}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		utils.FailMessage(c, "parse param error")
 		return
 	}
 
-	record := models.Record{ID: id, UserId: c.GetInt("UserId")}
+	record := models.Record{ID: req.RecordId, UserId: c.GetInt("UserId")}
 	if !record.DeleteRecord() {
 		utils.FailMessage(c, "delete record error")
 		return

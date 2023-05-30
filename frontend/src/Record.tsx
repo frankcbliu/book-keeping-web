@@ -1,8 +1,6 @@
 import React from 'react';
 import {Card, Form, Input, theme} from 'antd';
 import {useNavigate} from "react-router-dom";
-import axios from "axios";
-import {UPDATE_CONFIG} from "./constants";
 
 // 登录页面
 const Record: React.FC = () => {

@@ -1,64 +1,53 @@
 import React from 'react';
-import {Button, Form, Input} from 'antd';
-import {useNavigate} from "react-router-dom";
-import axios from "axios";
-import {UPDATE_CONFIG} from "./constants";
+import { Button, Form, Input, message } from 'antd';
+import { useNavigate } from "react-router-dom";
+import userApi from "./api/user"
 
 const layout = {
-    labelCol: {span: 24},
-    wrapperCol: {span: 24},
+    labelCol: { span: 24 },
+    wrapperCol: { span: 24 },
 };
 
 const tailLayout = {
-    wrapperCol: {span: 24},
+    wrapperCol: { span: 24 },
 };
 
 // 登录页面
 const Login: React.FC = () => {
     const navigate = useNavigate()
 
-    const onFinish = async (values: any) => {
-        axios.post<[]>("/user/login", values).then((response) => {
-            const authorization = response.headers["authorization"]; // 获取 Set-Cookie 头部
-            UPDATE_CONFIG(authorization)
+    const onFinish = async (params: any) => {
+        userApi.userLogin(params).then(() => {
+            message.success('登录成功')
             navigate('/main')
-        });
+        }).catch((err) => {
+            message.error(err)
+        })
     };
 
-
-    const onFinishFailed = (errorInfo: any) => {
-        localStorage.clear()
-        console.log('Failed:', errorInfo);
-    };
 
     return (
         <Form
             {...layout}
             name="basic"
-            initialValues={{remember: true}}
+            initialValues={{ remember: true }}
             onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
-            style={{padding: 20}}
-        >
+            style={{ padding: 20 }}>
             <Form.Item
-                label="Username"
-                name="username"
-                rules={[{required: true, message: 'Please input your username!'}]}
-            >
-                <Input/>
+                label="Username" name="username"
+                rules={[{ required: true, message: 'Please input your username!' }]}>
+                <Input />
             </Form.Item>
 
             <Form.Item
-                label="Password"
-                name="password"
-                rules={[{required: true, message: 'Please input your password!'}]}
-            >
-                <Input.Password/>
+                label="Password" name="password"
+                rules={[{ required: true, message: 'Please input your password!' }]}>
+                <Input.Password />
             </Form.Item>
 
             <Form.Item {...tailLayout}>
                 <Button type="primary" htmlType="submit">
-                    Submit
+                    登录
                 </Button>
             </Form.Item>
         </Form>
