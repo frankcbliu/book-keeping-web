@@ -1,82 +1,60 @@
 import axios from './instance/bff_instance'
+import {ClassificationId, ClassificationItem, LedgerId} from "./interface";
 
 
 const classificationApi = {
-  classificationList,
-  classificationCreate,
-  classificationDelete,
+  listClassification,
+  createClassification,
+  deleteClassification,
 }
 
 
-export interface ClassificationListParams {
-  ledger_id?: number; // 账本ID
-}
 /**
  * 查询分类列表
- * @returns 
  */
-function classificationList(params: ClassificationListParams) {
-  const { ledger_id } = params || {};
-
-  return axios({
-    method: 'POST',
-    url: '/classification/list',
-    data: {
-      ledger_id: ledger_id
-    },
-  });
+export async function listClassification(ledger_id: LedgerId): Promise<ClassificationItem[]> {
+  try {
+    const response = await axios.post<{ classifications: ClassificationItem[] }>('/classification/list', {
+      ledger_id: ledger_id, // 账本ID
+    });
+    return response.data.classifications;
+  } catch (error) {
+    console.error('listClassificationList error', error)
+    return [];
+  }
 }
 
-
-export interface ClassificationCreateParams {
-  ledger_id?: number; // 账本ID
-  name?: string; // 分类名称
-}
 
 /**
  * 创建分类
- * @param params 
- * @returns 
  */
-function classificationCreate(params: ClassificationCreateParams) {
-  const { name, ledger_id } = params || {};
-
-  return axios({
-    method: 'POST',
-    url: '/classification/create',
-    data: {
-      name: name,
-      ledger_id: ledger_id,
-    },
-  });
-}
-
-
-
-export interface ClassificationDeleteParams {
-  ledger_id?: number; // 账本ID
-  name?: string; // 分类名称
+export async function createClassification(ledger_id: LedgerId, name: string): Promise<ClassificationId | null> {
+  try {
+    const response = await axios.post<ClassificationId>('/classification/create', {
+      ledger_id: ledger_id, // 账本ID
+      name: name, // 分类名称
+    });
+    return response.data;
+  } catch (error) {
+    console.error('createClassification error', error)
+    return null;
+  }
 }
 
 /**
  * 删除分类
- * @param params 
- * @returns 
  */
-function classificationDelete(params: ClassificationDeleteParams) {
-  const { name, ledger_id } = params || {};
-
-  return axios({
-    method: 'POST',
-    url: '/classification/delete',
-    data: {
-      name: name,
-      ledger_id: ledger_id,
-    },
-  });
+export async function deleteClassification(ledger_id: LedgerId, name: string): Promise<boolean> {
+  try {
+    await axios.post<any>('/classification/delete', {
+      ledger_id: ledger_id, // 账本ID
+      name: name, // 分类名称
+    });
+    return true;
+  } catch (error) {
+    console.error('deleteLedger error', error)
+    return false;
+  }
 }
-
-
-
 
 export default classificationApi

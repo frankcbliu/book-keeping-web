@@ -43,5 +43,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://1.14.175.63:9988"
+  "proxy": "http://localhost:9988"
 }

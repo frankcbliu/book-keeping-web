@@ -1,29 +1,24 @@
 import axios from './instance/bff_instance'
 
 const userApi = {
-    userLogin,
-}
-
-export interface UserLoginParams {
-    username?: string;
-    password?: string;
+  userLogin,
 }
 
 /**
  * 登录接口
  * @returns
- * @param params
  */
-function userLogin(params: UserLoginParams) {
-    const { username, password } = params || {};
-    return axios({
-        method: 'POST',
-        url: '/user/login',
-        data: {
-            username: username,
-            password: password,
-        },
+export async function userLogin(username: string, password: string): Promise<any> {
+  try {
+    const response = await axios.post<any>('/user/login', {
+      username: username,
+      password: password,
     });
+    return response.data;
+  } catch (error) {
+    console.error('userLogin error', error)
+    return null;
+  }
 }
 
 export default userApi

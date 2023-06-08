@@ -1,79 +1,59 @@
 import axios from './instance/bff_instance'
-
+import {ClassificationId, SubClassificationItem} from "./interface";
 
 const subClassificationApi = {
-  subClassificationList,
-  subClassificationCreate,
-  subClassificationDelete,
-}
-
-export interface SubClassificationListParams {
-  classification_id?: number; // 账本ID
+  listSubClassification,
+  createSubClassification,
+  deleteSubClassification,
 }
 
 /**
- * 查询子类别列表
- * @returns 
+ * 查询分类列表
  */
-function subClassificationList(params: SubClassificationListParams) {
-  const { classification_id } = params || {};
-
-  return axios({
-    method: 'POST',
-    url: '/sub_classification/list',
-    data: {
-      classification_id: classification_id,
-    },
-  });
+export async function listSubClassification(classification_id: ClassificationId): Promise<SubClassificationItem[]> {
+  try {
+    const response = await axios.post<{ sub_classifications: SubClassificationItem[] }>('/sub_classification/list', {
+      classification_id: classification_id, // 分类ID
+    });
+    return response.data.sub_classifications;
+  } catch (error) {
+    console.error('listSubClassification error', error)
+    return [];
+  }
 }
 
-
-export interface SubClassificationCreateParams {
-  classification_id?: number; // 账本ID
-  name?: string; // 分类名称
-}
 
 /**
  * 创建分类
- * @param params 
- * @returns 
  */
-function subClassificationCreate(params: SubClassificationCreateParams) {
-  const { name, classification_id } = params || {};
-
-  return axios({
-    method: 'POST',
-    url: '/sub_classification/create',
-    data: {
-      name: name,
-      classification_id: classification_id,
-    },
-  });
+export async function createSubClassification(classification_id: ClassificationId, name: string): Promise<any> {
+  try {
+    const response = await axios.post<any>('/sub_classification/create', {
+      classification_id: classification_id, // 分类ID
+      name: name, // 子分类名称
+    });
+    return response.data;
+  } catch (error) {
+    console.error('createSubClassification error', error)
+    return null;
+  }
 }
 
-
-
-export interface SubClassificationDeleteParams {
-  classification_id?: number; // 账本ID
-  name?: string; // 分类名称
-}
 
 /**
  * 删除分类
- * @param params 
- * @returns 
  */
-function subClassificationDelete(params: SubClassificationDeleteParams) {
-  const { name, classification_id } = params || {};
-
-  return axios({
-    method: 'POST',
-    url: '/sub_classification/delete',
-    data: {
-      name: name,
-      classification_id: classification_id,
-    },
-  });
+export async function deleteSubClassification(classification_id: ClassificationId, name: string): Promise<boolean> {
+  try {
+    await axios.post<any>('/sub_classification/delete', {
+      classification_id: classification_id, // 分类ID
+      name: name, // 子分类名称
+    });
+    return true;
+  } catch (error) {
+    console.error('deleteLedger error', error)
+    return false;
+  }
 }
 
 export default subClassificationApi

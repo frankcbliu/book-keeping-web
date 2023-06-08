@@ -1,65 +1,53 @@
 import axios from './instance/bff_instance'
-
+import {LedgerId, LedgerItem} from './interface';
 
 const ledgerApi = {
-  ledgerList,
-  ledgerCreate,
-  ledgerDelete,
+  createLedger,
+  listLedger,
+  deleteLedger,
 }
 
 /**
  * 查询账本列表
- * @returns 
  */
-function ledgerList() {
-  return axios({
-    method: 'POST',
-    url: '/ledger/list',
-  });
-}
-
-export interface LedgerCreateParams {
-  name?: string; // 账本名称
+export async function listLedger(): Promise<LedgerItem[]> {
+  try {
+    const response = await axios.post<{ ledgers: LedgerItem[] }>('/ledger/list');
+    return response.data.ledgers;
+  } catch (error) {
+    console.error('listLedger error', error)
+    return [];
+  }
 }
 
 /**
  * 创建账本
- * @param params 
- * @returns 
  */
-function ledgerCreate(params: LedgerCreateParams) {
-  const { name } = params || {};
-
-  return axios({
-    method: 'POST',
-    url: '/ledger/create',
-    data: {
-      name: name
-    },
-  });
-}
-
-
-
-export interface LedgerDeleteParams {
-  name?: string; // 账本名称
+export async function createLedger(name: string): Promise<LedgerId | null> {
+  try {
+    const response = await axios.post<LedgerId>('/ledger/create', {
+      name
+    });
+    return response.data;
+  } catch (error) {
+    console.error('createLedger error', error)
+    return null;
+  }
 }
 
 /**
  * 删除账本
- * @param params 
- * @returns 
  */
-function ledgerDelete(params: LedgerDeleteParams) {
-  const { name } = params || {};
-
-  return axios({
-    method: 'POST',
-    url: '/ledger/delete',
-    data: {
-      name: name
-    },
-  });
+export async function deleteLedger(id: LedgerId): Promise<boolean> {
+  try {
+    await axios.post<any>('/ledger/delete', {
+      id,
+    });
+    return true;
+  } catch (error) {
+    console.error('deleteLedger error', error)
+    return false;
+  }
 }
 
 export default ledgerApi
