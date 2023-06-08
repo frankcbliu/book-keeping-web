@@ -1,5 +1,5 @@
 import ledgerApi from "../api/ledger";
-import {ClassificationId, ClassificationItem, LedgerId, LedgerItem, SubClassificationItem} from "../api/interface";
+import { ClassificationId, ClassificationItem, LedgerId, LedgerItem, SubClassificationItem } from "../api/interface";
 import classificationApi from "../api/classification";
 import subClassificationApi from "../api/sub_classification";
 
@@ -8,7 +8,7 @@ import subClassificationApi from "../api/sub_classification";
  */
 class CacheService {
   // 缓存结构
-  private ledgers: LedgerItem [] = []
+  private ledgers: LedgerItem[] = []
   private classificationMap: Map<LedgerId, ClassificationItem[]> = new Map()
   private subClassificationMap: Map<ClassificationId, SubClassificationItem[]> = new Map();
 

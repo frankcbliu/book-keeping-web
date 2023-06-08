@@ -2,6 +2,7 @@ package routers
 
 import (
 	"book-keeping-web/utils"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -21,8 +22,9 @@ func InitRouter() *gin.Engine {
 	api := r.Group("/api")
 	user := api.Group("/user")
 	{
-		user.POST("/register", UserRegister) // 注册
-		user.POST("/login", UserLogin)       // 登录
+		user.POST("/register", UserRegister)               // 注册
+		user.POST("/login", UserLogin)                     // 登录
+		user.POST("/auth", utils.CookieCheck(), CheckAuth) // 校验登录状态
 	}
 	ledger := api.Group("/ledger")
 	{

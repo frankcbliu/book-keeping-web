@@ -2,9 +2,10 @@ package models
 
 import (
 	"book-keeping-web/conf"
+	"log"
+
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"log"
 )
 
 var SqliteDB = gorm.DB{}

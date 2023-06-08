@@ -1,13 +1,13 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {Layout, Menu} from 'antd';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Layout, Menu } from 'antd';
 import Classification from "./Classification";
 import Record from "./Record";
-import {Route, Routes, useNavigate} from "react-router-dom";
-import {RoutePath} from './constants'
-import {LedgerItem} from './api/interface';
-import {cacheService} from './services/cache';
+import { Route, Routes, useNavigate } from "react-router-dom";
+import { RoutePath } from './constants'
+import { LedgerItem } from './api/interface';
+import { cacheService } from './services/cache';
 
-const {Header, Content, Footer} = Layout;
+const { Header, Content, Footer } = Layout;
 
 enum FixedMenuKey {
   // 账单
@@ -25,7 +25,7 @@ const Main: React.FC = () => {
   const [ledgerList, setLegerList] = useState<LedgerItem[]>([]);
   const [activeLedgerId, setActiveLedgerId] = useState<number>(0);
   const [selectedKeys, setSelectedKeys] = useState<string[]>([FixedMenuKey.RECORD]);
-  const menuItems = useMemo(() => (ledgerList.map(({id, name}) => ({
+  const menuItems = useMemo(() => (ledgerList.map(({ id, name }) => ({
     key: String(id),
     label: name
   })).concat(...FixedMenuItems)), [ledgerList]);
@@ -56,20 +56,20 @@ const Main: React.FC = () => {
   };
 
   return (
-    <Layout style={{minHeight: '100vh', overflow: "hidden"}}>
+    <Layout style={{ minHeight: '100vh', overflow: "hidden" }}>
       <Header style={headerStyle}>
         <Menu
           theme="dark"
           mode="horizontal"
           selectedKeys={selectedKeys}
           items={menuItems}
-          onClick={({key}) => handleMenuClick(key)}
+          onClick={({ key }) => handleMenuClick(key)}
         />
       </Header>
       <Content style={contentStyle}>
         <Routes>
-          <Route path="/ledger" element={<Classification ledgerId={activeLedgerId}/>}/>
-          <Route path="/record" element={<Record/>}/>
+          <Route path="/ledger" element={<Classification ledgerId={activeLedgerId} />} />
+          <Route path="/record" element={<Record />} />
         </Routes>
       </Content>
       <Footer style={footerStyle}>Ant Design ©2023 Created by Ant UED</Footer>

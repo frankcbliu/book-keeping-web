@@ -3,8 +3,9 @@ package routers
 import (
 	"book-keeping-web/models"
 	"book-keeping-web/utils"
-	"github.com/gin-gonic/gin"
 	"log"
+
+	"github.com/gin-gonic/gin"
 )
 
 type UserReq struct {
@@ -42,4 +43,9 @@ func UserLogin(c *gin.Context) {
 	}
 	utils.SetAuthorization(c, req.Username, user.ID)
 	utils.SuccessMessage(c, "login success")
+}
+
+// CheckAuth 校验登录状态
+func CheckAuth(c *gin.Context) {
+	utils.SuccessMessage(c, "check success")
 }

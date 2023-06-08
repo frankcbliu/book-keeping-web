@@ -1,5 +1,5 @@
 import axios from './instance/bff_instance'
-import {LedgerId, LedgerItem} from './interface';
+import { LedgerId, LedgerItem } from './interface';
 
 const ledgerApi = {
   createLedger,

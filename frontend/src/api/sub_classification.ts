@@ -1,5 +1,5 @@
 import axios from './instance/bff_instance'
-import {ClassificationId, SubClassificationItem} from "./interface";
+import { ClassificationId, SubClassificationItem } from "./interface";
 
 const subClassificationApi = {
   listSubClassification,

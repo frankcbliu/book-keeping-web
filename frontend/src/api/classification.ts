@@ -1,5 +1,5 @@
 import axios from './instance/bff_instance'
-import {ClassificationId, ClassificationItem, LedgerId} from "./interface";
+import { ClassificationId, ClassificationItem, LedgerId } from "./interface";
 
 
 const classificationApi = {

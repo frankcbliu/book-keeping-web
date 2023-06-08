@@ -14,12 +14,12 @@ import {
   theme,
   TimePicker
 } from 'antd';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import TextArea from "antd/es/input/TextArea";
-import recordApi, {RecordCreateParams} from './api/record';
-import {RecordType} from './constants';
-import {cacheService} from "./services/cache";
+import recordApi, { RecordCreateParams } from './api/record';
+import { RecordType } from './constants';
+import { cacheService } from "./services/cache";
 
 interface ClassificationItem {
   id: number;
@@ -53,15 +53,15 @@ interface Props {
 }
 
 // 分类子页面
-const Classification: React.FC<Props> = ({ledgerId}) => {
+const Classification: React.FC<Props> = ({ ledgerId }) => {
   const [classification, setClassification] = useState<ClassificationItem[]>([]);
   const [sub_classification, setSubClassification] = useState<SubClassificationItem[]>([]);
   // 模态
   const [open, setOpen] = useState(false);
-  const [data, setData] = useState<FormDataItem>({data_type: RecordType.expense, consumption_time: dayjs()});
+  const [data, setData] = useState<FormDataItem>({ data_type: RecordType.expense, consumption_time: dayjs() });
   const rows = splitArray(classification, 2); // 将数据源分成多个数组，每个数组包含2个元素
   const {
-    token: {colorBgContainer},
+    token: { colorBgContainer },
   } = theme.useToken();
 
 
@@ -86,7 +86,7 @@ const Classification: React.FC<Props> = ({ledgerId}) => {
     // 打开 modal
     setOpen(true);
     // 初始化
-    setData({...data, cur_classification_id: id, consumption_time: dayjs()})
+    setData({ ...data, cur_classification_id: id, consumption_time: dayjs() })
   };
 
   // 创建账单记录
@@ -100,10 +100,10 @@ const Classification: React.FC<Props> = ({ledgerId}) => {
       "consumption_time": data.consumption_time?.format("YYYY-MM-DD HH:mm:ss")
     };
     recordApi.recordCreate(req).then((res: any) => {
-      const {msg} = res
+      const { msg } = res
       message.success(msg)
       // 重新初始化
-      setData({...data, amount: null, cur_sub_classification_id: 0, note: ""})
+      setData({ ...data, amount: null, cur_sub_classification_id: 0, note: "" })
       setOpen(false);
     }).catch((err) => {
       message.error(err)
@@ -111,21 +111,21 @@ const Classification: React.FC<Props> = ({ledgerId}) => {
   };
 
   const handleSubCf = (e: RadioChangeEvent) => {
-    setData({...data, cur_sub_classification_id: e.target.value})
+    setData({ ...data, cur_sub_classification_id: e.target.value })
   };
 
   return (
-    <div style={{backgroundColor: colorBgContainer, marginTop: 16}}>
+    <div style={{ backgroundColor: colorBgContainer, marginTop: 16 }}>
       {rows.map((row, rowIndex) => (
         <Row key={rowIndex} style={{
           backgroundColor: colorBgContainer, marginBottom: 16,
           padding: "0px 16px"
         }}
-             justify={"space-between"} align={"middle"}>
+          justify={"space-between"} align={"middle"}>
           {row.map((item, itemIndex) => (
             <Col key={itemIndex} span={11}>
               <Card id={item.id.toString()} title={item.name}
-                    onClick={(e) => handleCard(item.id)}>Money, 占空</Card>
+                onClick={(e) => handleCard(item.id)}>Money, 占空</Card>
             </Col>
           ))}
         </Row>
@@ -139,16 +139,16 @@ const Classification: React.FC<Props> = ({ledgerId}) => {
         }}
       >
         <Form
-          labelCol={{span: 4}}
-          wrapperCol={{span: 14}}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 14 }}
           layout="horizontal"
-          style={{maxWidth: 600}}
+          style={{ maxWidth: 600 }}
         >
           <Form.Item label="交易信息">
             <Space direction="horizontal">
               <Space.Compact>
                 <Select value={data.data_type} onChange={(value) => {
-                  setData({...data, data_type: value})
+                  setData({ ...data, data_type: value })
                 }}>
                   <Select.Option value={RecordType.expense}>{RecordType.expense}</Select.Option>
                   <Select.Option value={RecordType.income}>{RecordType.income}</Select.Option>
@@ -156,24 +156,24 @@ const Classification: React.FC<Props> = ({ledgerId}) => {
               </Space.Compact>
               <Space.Compact>
                 <DatePicker value={data.consumption_time} onChange={(e) => {
-                  if (e) setData({...data, consumption_time: e})
-                }}/>
+                  if (e) setData({ ...data, consumption_time: e })
+                }} />
               </Space.Compact>
               <Space.Compact>
                 <TimePicker value={data.consumption_time} onChange={(e) => {
-                  if (e) setData({...data, consumption_time: e})
-                }}/>
+                  if (e) setData({ ...data, consumption_time: e })
+                }} />
               </Space.Compact>
             </Space>
           </Form.Item>
           <Form.Item label="金额">
             <InputNumber type={"number"} pattern="[0-9]*" addonAfter="￥" value={data.amount} onChange={(value) => {
-              setData({...data, amount: value})
-            }}/>
+              setData({ ...data, amount: value })
+            }} />
           </Form.Item>
           <Form.Item label="子类别">
             <Radio.Group onChange={handleSubCf} value={data.cur_sub_classification_id}
-                         buttonStyle="solid">
+              buttonStyle="solid">
               {sub_classification.map((item, index) => (
                 <Radio.Button key={index} value={item.id}>{item.name}</Radio.Button>
               ))}
@@ -181,7 +181,7 @@ const Classification: React.FC<Props> = ({ledgerId}) => {
           </Form.Item>
           <Form.Item label="更多信息">
             <TextArea rows={2} placeholder="备注" value={data.note}
-                      onChange={(e) => setData({...data, note: e.target.value})}/>
+              onChange={(e) => setData({ ...data, note: e.target.value })} />
           </Form.Item>
         </Form>
       </Modal>

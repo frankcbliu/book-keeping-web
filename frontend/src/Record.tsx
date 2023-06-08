@@ -1,6 +1,6 @@
 import React from 'react';
-import {Card, theme} from 'antd';
-import {useNavigate} from "react-router-dom";
+import { Card, theme } from 'antd';
+import { useNavigate } from "react-router-dom";
 
 // 登录页面
 const Record: React.FC = () => {
@@ -17,17 +17,17 @@ const Record: React.FC = () => {
   };
 
   const {
-    token: {colorBgContainer},
+    token: { colorBgContainer },
   } = theme.useToken();
 
   return (
-    <div style={{backgroundColor: colorBgContainer}}>
+    <div style={{ backgroundColor: colorBgContainer }}>
       <Card title="Card title">
         <Card type="inner" title="Inner Card title" extra={<a href="#">More</a>}>
           Inner Card content
         </Card>
         <Card
-          style={{marginTop: 16}}
+          style={{ marginTop: 16 }}
           type="inner"
           title="Inner Card title"
           extra={<a href="#">More</a>}
