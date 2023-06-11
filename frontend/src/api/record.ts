@@ -1,31 +1,41 @@
 import axios from './instance/bff_instance'
+import { RecordId, RecordItem } from './interface';
 
 
 const recordApi = {
-  recordList,
+  listRecord,
+  listAllRecords,
   recordCreate,
-  recordDelete,
+  deleteRecord,
 }
 
-export interface RecordListParams {
-  start_time?: string; // 开始时间
-  end_time?: string; // 截止时间
-}
 /**
- * 查询账单
- * @returns 
+ * 根据时间范围查询账单
  */
-function recordList(params: RecordListParams) {
-  const { start_time, end_time } = params || {};
-
-  return axios({
-    method: 'POST',
-    url: '/classification/list',
-    data: {
-      start_time: start_time,
+export async function listRecord(begin_time: string, end_time: string): Promise<RecordItem[]> {
+  try {
+    const response = await axios.post<{ records: RecordItem[] }>('/record/list', {
+      begin_time: begin_time,
       end_time: end_time,
-    },
-  });
+    });
+    return response.data.records;
+  } catch (error) {
+    console.error('list records error', error)
+    return [];
+  }
+}
+
+/**
+ * 查询所有账单
+ */
+export async function listAllRecords(): Promise<RecordItem[]> {
+  try {
+    const response = await axios.post<{ records: RecordItem[] }>('/record/list_all');
+    return response.data.records;
+  } catch (error) {
+    console.error('list records error', error)
+    return [];
+  }
 }
 
 export interface RecordCreateParams {
@@ -60,19 +70,17 @@ export interface RecordDeleteParams {
 
 /**
  * 删除账单
- * @param params 
- * @returns 
  */
-function recordDelete(params: RecordDeleteParams) {
-  const { record_id } = params || {};
-
-  return axios({
-    method: 'POST',
-    url: '/record/delete',
-    data: {
+export async function deleteRecord(record_id: RecordId): Promise<boolean> {
+  try {
+    await axios.post<any>('/record/delete', {
       record_id: record_id
-    },
-  });
+    });
+    return true;
+  } catch (error) {
+    console.error('list records error', error)
+    return false;
+  }
 }
 
 export default recordApi

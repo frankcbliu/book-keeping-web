@@ -1,7 +1,8 @@
 import ledgerApi from "../api/ledger";
-import { ClassificationId, ClassificationItem, LedgerId, LedgerItem, SubClassificationItem } from "../api/interface";
+import { ClassificationId, ClassificationItem, LedgerId, LedgerItem, RecordItem, SubClassificationItem } from "../api/interface";
 import classificationApi from "../api/classification";
 import subClassificationApi from "../api/sub_classification";
+import recordApi from "../api/record";
 
 /**
  * 账本服务
@@ -11,6 +12,8 @@ class CacheService {
   private ledgers: LedgerItem[] = []
   private classificationMap: Map<LedgerId, ClassificationItem[]> = new Map()
   private subClassificationMap: Map<ClassificationId, SubClassificationItem[]> = new Map();
+  private records: RecordItem[] = []
+  private needToUpdateRecord: boolean = false
 
   // 获取账本列表
   public async getLedgerList(): Promise<LedgerItem[]> {
@@ -49,6 +52,43 @@ class CacheService {
     return subClassificationList;
   }
 
+  // 获取账本列表
+  public async getRecordList(begin_time: string, end_time: string): Promise<RecordItem[]> {
+    // 已有缓存，直接返回
+    if (this.records.length && !this.needToUpdateRecord) {
+      return this.filterRecords(begin_time, end_time);
+    }
+    // 更新缓存
+    this.records = (await recordApi.listAllRecords())
+    this.records.sort((a, b) => {
+      let atime = new Date(a.consumption_time)
+      let btime = new Date(b.consumption_time)
+      if (atime === btime) {
+        return 0
+      } else if (atime > btime) {
+        return -1
+      } else {
+        return 1
+      }
+    });
+    this.needToUpdateRecord = false
+    return this.filterRecords(begin_time, end_time);
+  }
+
+  // 根据时间对已经缓存好的数据进行过滤
+  private filterRecords(begin_time: string, end_time: string): RecordItem[] {
+    let btime = new Date(begin_time)
+    let etime = new Date(end_time)
+    return this.records.filter((item) => {
+      let ctime = new Date(item.consumption_time)
+      return btime <= ctime && ctime <= etime
+    })
+  }
+
+  // 设置需要更新标识
+  public NeedToUpdateRecord() {
+    this.needToUpdateRecord = true
+  }
 }
 
 export const cacheService = new CacheService();

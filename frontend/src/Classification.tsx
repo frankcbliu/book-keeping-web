@@ -4,7 +4,6 @@ import {
   DatePicker,
   Form,
   InputNumber,
-  message,
   Modal,
   Radio,
   RadioChangeEvent,
@@ -18,7 +17,7 @@ import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import TextArea from "antd/es/input/TextArea";
 import recordApi, { RecordCreateParams } from './api/record';
-import { RecordType } from './constants';
+import { commonMessage, RecordType } from './constants';
 import { cacheService } from "./services/cache";
 
 interface ClassificationItem {
@@ -101,12 +100,13 @@ const Classification: React.FC<Props> = ({ ledgerId }) => {
     };
     recordApi.recordCreate(req).then((res: any) => {
       const { msg } = res
-      message.success(msg)
+      commonMessage.success(msg)
       // 重新初始化
       setData({ ...data, amount: null, cur_sub_classification_id: 0, note: "" })
       setOpen(false);
+      cacheService.NeedToUpdateRecord()
     }).catch((err) => {
-      message.error(err)
+      commonMessage.error(err)
     })
   };
 

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"book-keeping-web/utils"
 	"log"
 	"time"
 
@@ -88,7 +89,7 @@ func (record *Record) ListRecordByLedgerId(records *[]Record) bool {
 	if len(*records) > 0 {
 		return true
 	}
-	log.Println("[Record.ListRecord]", "LedgerId:", record.LedgerId, "no exist records")
+	log.Println("[Record.ListRecordByLedgerId]", "LedgerId:", record.LedgerId, "no exist records")
 	return false
 }
 
@@ -98,7 +99,7 @@ func (record *Record) ListRecordByClassificationId(records *[]Record) bool {
 	if len(*records) > 0 {
 		return true
 	}
-	log.Println("[Record.ListRecord]", "ClassificationId:", record.ClassificationId, "no exist records")
+	log.Println("[Record.ListRecordByClassificationId]", "ClassificationId:", record.ClassificationId, "no exist records")
 	return false
 }
 
@@ -111,7 +112,7 @@ func (record *Record) ToRecordView(records *[]Record) []RecordView {
 			Amount:            v.Amount,
 			Note:              v.Note,
 			Type:              v.Type,
-			ConsumptionTime:   v.ConsumptionTime.String(),
+			ConsumptionTime:   v.ConsumptionTime.Format(utils.TimeLayout),
 			Ledger:            v.GetLedgerName(),
 			Classification:    v.GetClassificationName(),
 			SubClassification: v.GetSubClassificationName(),
@@ -129,4 +130,24 @@ func (record *Record) DeleteRecord() bool {
 		return false
 	}
 	return true
+}
+
+// ListRecordByTime 根据时间范围查询记录
+func (record *Record) ListRecordByTime(begin time.Time, end time.Time, records *[]Record) bool {
+	SqliteDB.Where("user_id = ?", record.UserId).Where("consumption_time BETWEEN ? AND ?", begin, end).Find(records)
+	if len(*records) > 0 {
+		return true
+	}
+	log.Println("[Record.ListRecordByTime]", "begin:", begin.UTC(), "end:", end.UTC(), "no exist records")
+	return false
+}
+
+// ListRecords 根据时间范围查询记录
+func (record *Record) ListRecords(records *[]Record) bool {
+	SqliteDB.Where("user_id = ?", record.UserId).Find(records)
+	if len(*records) > 0 {
+		return true
+	}
+	log.Println("[Record.ListRecords]", record.UserId, "no exist records")
+	return false
 }

@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { Button, Form, Input, message } from 'antd';
+import { Button, Form, Input } from 'antd';
 import { useNavigate } from "react-router-dom";
 import userApi from "./api/user"
-import { RoutePath } from "./constants";
+import { RoutePath, commonMessage } from "./constants";
 
 const layout = {
   labelCol: { span: 24 },
@@ -20,10 +20,10 @@ const Login: React.FC = () => {
   const onFinish = async (params: any) => {
     const login_success = await userApi.userLogin(params['username'], params['password']);
     if (login_success) {
-      message.success('登录成功')
+      commonMessage.success('登录成功')
       navigate(RoutePath.PATH_LEDGER)
-    } else{
-      message.error('登录失败')
+    } else {
+      commonMessage.error('登录失败')
     }
   };
 

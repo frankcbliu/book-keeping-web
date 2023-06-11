@@ -50,8 +50,10 @@ func InitRouter() *gin.Engine {
 	record := api.Group("/record")
 	{
 		record.Use(utils.CookieCheck())
-		record.POST("/create", RecordCreate) // 创建账单
-		record.POST("/delete", RecordDelete) // 删除账单
+		record.POST("/create", RecordCreate)    // 创建账单
+		record.POST("/list", RecordList)        // 查询账单
+		record.POST("/list_all", RecordListAll) // 查询所有账单
+		record.POST("/delete", RecordDelete)    // 删除账单
 	}
 	// 单接口的登录校验
 	//r.GET("/home", utils.CookieCheck(), func(c *gin.Context) {

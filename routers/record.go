@@ -25,7 +25,7 @@ func RecordCreate(c *gin.Context) {
 		return
 	}
 	// 解析时间
-	consumptionTime, err := time.Parse("2006-01-02 15:04:05", req.ConsumptionTime)
+	consumptionTime, err := time.Parse(utils.TimeLayout, req.ConsumptionTime)
 	if err != nil {
 		utils.FailMessage(c, "parse consumption_time error.")
 		return
@@ -57,4 +57,49 @@ func RecordDelete(c *gin.Context) {
 		return
 	}
 	utils.SuccessMessage(c, "delete record success")
+}
+
+type RecordListReq struct {
+	BeginTime string `json:"begin_time" binding:"required"` // 开始时间
+	EndTime   string `json:"end_time" binding:"required"`   // 截止时间
+}
+
+// RecordList 查询账单
+func RecordList(c *gin.Context) {
+	req := RecordListReq{}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		utils.FailMessage(c, "parse param error")
+		return
+	}
+	beginTime, err := time.Parse(utils.TimeLayout, req.BeginTime)
+	if err != nil {
+		utils.FailMessage(c, "parse begin_time error.")
+		return
+	}
+	endTime, err := time.Parse(utils.TimeLayout, req.EndTime)
+	if err != nil {
+		utils.FailMessage(c, "parse end_time error.")
+		return
+	}
+
+	var records []models.Record
+	record := models.Record{UserId: c.GetInt("UserId")}
+	if !record.ListRecordByTime(beginTime, endTime, &records) {
+		utils.FailMessage(c, "list record error")
+		return
+	}
+	res := record.ToRecordView(&records)
+	utils.Success(c, gin.H{"records": res}, "list records success")
+}
+
+// RecordListAll 查询所有账单
+func RecordListAll(c *gin.Context) {
+	var records []models.Record
+	record := models.Record{UserId: c.GetInt("UserId")}
+	if !record.ListRecords(&records) {
+		utils.FailMessage(c, "list record error")
+		return
+	}
+	res := record.ToRecordView(&records)
+	utils.Success(c, gin.H{"records": res}, "list records success")
 }
