@@ -26,3 +26,5 @@ export const commonMessage = {
         message.error(msg, 1)
     },
 }
+
+export const DATE_TIME_FORMAT = "YYYY-MM-DD HH:mm:ss"

@@ -89,6 +89,22 @@ class CacheService {
   public NeedToUpdateRecord() {
     this.needToUpdateRecord = true
   }
+
+
+  public async GetLedgerName(ledger_id: LedgerId) {
+    const ledgers = await this.getLedgerList()
+    return ledgers.find((ledger: LedgerItem) => {
+      return ledger.id === ledger_id
+    })?.name
+  }
+
+  public async getClassificationName(ledger_id: LedgerId, classification_id: ClassificationId) {
+    const classifications = await this.getClassificationList(ledger_id)
+    return classifications.find((classification: ClassificationItem) => {
+      return classification.id === classification_id
+    })?.name
+  }
+
 }
 
 export const cacheService = new CacheService();

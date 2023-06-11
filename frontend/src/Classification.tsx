@@ -17,13 +17,9 @@ import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import TextArea from "antd/es/input/TextArea";
 import recordApi, { RecordCreateParams } from './api/record';
-import { commonMessage, RecordType } from './constants';
+import { commonMessage, DATE_TIME_FORMAT, RecordType } from './constants';
 import { cacheService } from "./services/cache";
-
-interface ClassificationItem {
-  id: number;
-  name: string;
-}
+import { ClassificationId, ClassificationItem, LedgerId, RecordItem } from './api/interface';
 
 interface SubClassificationItem {
   id: number;
@@ -63,13 +59,20 @@ const Classification: React.FC<Props> = ({ ledgerId }) => {
     token: { colorBgContainer },
   } = theme.useToken();
 
-
-  useEffect(() => {
+  const updateLedgerId = async function () {
     if (!ledgerId)
       return
-    cacheService.getClassificationList(ledgerId).then((classifications) => {
-      setClassification(classifications)
-    })
+    const classifications = await cacheService.getClassificationList(ledgerId)
+    for (let i = 0; i < classifications.length; i++) {
+      const { amount, amount_rate } = await getAMountRateStr(ledgerId, classifications[i].id)
+      classifications[i].amount = amount
+      classifications[i].amount_rate = amount_rate
+    }
+    setClassification(classifications)
+  }
+
+  useEffect(() => {
+    updateLedgerId()
   }, [ledgerId]);
 
   useEffect(() => {
@@ -114,6 +117,27 @@ const Classification: React.FC<Props> = ({ ledgerId }) => {
     setData({ ...data, cur_sub_classification_id: e.target.value })
   };
 
+  // 计算占比
+  const getAMountRateStr = async (ledger_id: LedgerId, classification_id: ClassificationId) => {
+    const records = await cacheService.getRecordList(dayjs().subtract(1, 'month').format(DATE_TIME_FORMAT), dayjs().format(DATE_TIME_FORMAT))
+    let sum_amount = 0
+    for (let i = 0; i < records.length; i++) {
+      const element = records[i];
+      sum_amount += parseFloat(element.amount)
+    }
+
+    const ledgerName = await cacheService.GetLedgerName(ledger_id)
+    const classificationName = await cacheService.getClassificationName(ledger_id, classification_id)
+    let amount = 0
+    records.filter((record: RecordItem) => {
+      return record.ledger === ledgerName && record.classification === classificationName
+    }).forEach((record) => {
+      amount += parseFloat(record.amount)
+    })
+
+    return { amount: amount, amount_rate: amount / sum_amount }
+  }
+
   return (
     <div style={{ backgroundColor: colorBgContainer, marginTop: 16 }}>
       {rows.map((row, rowIndex) => (
@@ -125,7 +149,17 @@ const Classification: React.FC<Props> = ({ ledgerId }) => {
           {row.map((item, itemIndex) => (
             <Col key={itemIndex} span={11}>
               <Card id={item.id.toString()} title={item.name}
-                onClick={(e) => handleCard(item.id)}>Money, 占空</Card>
+                onClick={(e) => handleCard(item.id)}>
+                {
+                  item.amount ?
+                    <>
+                      <span style={{ color: 'green' }}>{"¥" + item.amount}</span>
+                      {"(" + (item.amount_rate * 100).toFixed(2) + '%)'}
+                    </>
+                    :
+                    <div>无</div>
+                }
+              </Card>
             </Col>
           ))}
         </Row>

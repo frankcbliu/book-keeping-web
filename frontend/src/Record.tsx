@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { cacheService } from './services/cache';
 import { RecordItem } from './api/interface';
 import recordApi from './api/record';
-import { commonMessage } from './constants';
+import { DATE_TIME_FORMAT, commonMessage } from './constants';
 
 const { confirm } = Modal;
 
@@ -26,7 +26,7 @@ const Record: React.FC = () => {
     if (!beginTime || !endTime)
       return
 
-    cacheService.getRecordList(beginTime.format("YYYY-MM-DD HH:mm:ss"), endTime.format("YYYY-MM-DD HH:mm:ss")).then((records) => {
+    cacheService.getRecordList(beginTime.format(DATE_TIME_FORMAT), endTime.format(DATE_TIME_FORMAT)).then((records) => {
       setRecordList(records)
       console.log(records)
     })

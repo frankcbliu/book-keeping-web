@@ -10,6 +10,8 @@ export type ClassificationId = number;
 export type ClassificationItem = {
   id: ClassificationId;
   name: string;
+  amount: number | 0; // 分类消费金额总数
+  amount_rate: number | 0; // 分类消费金额占比
 }
 
 // 子分类相关
