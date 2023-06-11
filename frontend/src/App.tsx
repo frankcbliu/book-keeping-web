@@ -9,7 +9,8 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="*" element={<Login />} />
+                <Route path={'*'} element={<Login />} />
+                <Route path={RoutePath.PATH_LOGIN} element={<Login />} />
                 <Route path={RoutePath.PATH_PREFIX_MAIN} element={<Main />} />
             </Routes>
         </BrowserRouter>

@@ -9,16 +9,16 @@ const userApi = {
  * 登录接口
  * @returns
  */
-export async function userLogin(username: string, password: string): Promise<any> {
+export async function userLogin(username: string, password: string): Promise<boolean> {
   try {
-    const response = await axios.post<any>('/user/login', {
+    await axios.post<any>('/user/login', {
       username: username,
       password: password,
     });
-    return response.data;
+    return true;
   } catch (error) {
-    console.error('userLogin error', error)
-    return null;
+    console.error('[userLogin]', error)
+    return false;
   }
 }
 
@@ -26,13 +26,14 @@ export async function userLogin(username: string, password: string): Promise<any
 /**
  * 校验登录
  */
-export async function checkAuth(): Promise<any> {
+export async function checkAuth(): Promise<boolean> {
   try {
-    const response = await axios.post<any>('/user/auth');
-    return response.data;
+    await axios.post<any>('/user/auth');
+    return true;
   } catch (error) {
-    console.error('auth error', error)
-    return null;
+    console.error('[checkAuth]', error)
+    localStorage.removeItem('authorization')
+    return false;
   }
 }
 

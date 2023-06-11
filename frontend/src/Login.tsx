@@ -18,17 +18,23 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const onFinish = async (params: any) => {
-    userApi.userLogin(params['username'], params['password']).then(() => {
+    const login_success = await userApi.userLogin(params['username'], params['password']);
+    if (login_success) {
       message.success('登录成功')
-      navigate(RoutePath.PATH_PREFIX_MAIN)
-    }).catch((err) => {
-      message.error(err)
-    })
+      navigate(RoutePath.PATH_LEDGER)
+    } else{
+      message.error('登录失败')
+    }
   };
 
   useEffect(() => {
-    userApi.checkAuth().then(() => {
-      navigate(RoutePath.PATH_PREFIX_MAIN)
+    // 自动校验是否已经登录
+    userApi.checkAuth().then((res) => {
+      if (res) {  // 校验成功，直接跳转到账本页面
+        navigate(RoutePath.PATH_LEDGER)
+      } else {  // 校验失败，跳转回登录页面
+        navigate(RoutePath.PATH_LOGIN)
+      }
     })
   }, []);
 

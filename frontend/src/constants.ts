@@ -7,4 +7,5 @@ export const RoutePath = {
     PATH_PREFIX_MAIN: "/main/*",
     PATH_RECORD: "/main/record",
     PATH_LEDGER: "/main/ledger",
+    PATH_LOGIN: "/login",
 }

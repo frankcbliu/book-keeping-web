@@ -12,14 +12,13 @@ const instance = axios.create({
 instance.interceptors.request.use(
   config => {
     const authorization = localStorage.getItem("authorization")
-    console.log('req', authorization)
     if (authorization) { // 自动带上 authorization
       config.headers['Authorization'] = authorization
     }
     return config;
   },
   error => {
-    console.log("req error", error)
+    console.error("[interceptors.request]", error)
     return Promise.reject(error);
   }
 );
