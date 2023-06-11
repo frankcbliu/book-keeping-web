@@ -153,7 +153,7 @@ const Classification: React.FC<Props> = ({ ledgerId }) => {
                 {
                   item.amount ?
                     <>
-                      <span style={{ color: 'green' }}>{"¥" + item.amount}</span>
+                      <span style={{ color: 'green' }}>{"¥" + Number.isInteger(item.amount) ? item.amount : item.amount.toFixed(2)}</span>
                       {"(" + (item.amount_rate * 100).toFixed(2) + '%)'}
                     </>
                     :

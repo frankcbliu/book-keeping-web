@@ -33,6 +33,7 @@ const Main: React.FC = () => {
   useEffect(() => {
     cacheService.getLedgerList().then((ledgerList) => {
       if (!ledgerList.length) {
+        navigate(RoutePath.PATH_LOGIN)
         return;
       }
 
