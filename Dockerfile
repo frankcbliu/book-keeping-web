@@ -17,12 +17,6 @@ RUN yarn config set registry https://registry.npm.taobao.org && \
 # 将当前目录复制到 Docker 镜像中的 /app 目录
 COPY ./frontend /app
 
-# 设置工作目录为 /app
-#WORKDIR /app
-
-# 安装项目依赖项
-#RUN yarn install
-
 # 编译 React 项目
 RUN yarn build
 
