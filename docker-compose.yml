@@ -1,10 +1,20 @@
 version: '3.0'
 
 services:
-  # Gin Web 服务器容器
+  # Gin Web 服务器容器，直接在机器上编译
+  # book-keeping:
+  #   build: .
+  #   ports:
+  #     - "9988:9988"
+  #   volumes:
+  #     - /root/book-keeping-docker/book-keeping-web/test.db:/app/test.db
+
+  # 使用 dockerHub 存储镜像容器
   book-keeping:
-    build: .
-    ports:
-      - "9988:9988"
+    image: vitasoy250/book-keeping-web:latest
+    # image: vitasoy250/book-keeping-web:v0.6
+    container_name: book-keeping-web
     volumes:
       - /root/book-keeping-docker/book-keeping-web/test.db:/app/test.db
+    ports:
+      - 9988:9988
