@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Layout, Menu, message } from 'antd';
+import { Layout, Menu } from 'antd';
 import Classification from "./Classification";
 import Record from "./Record";
 import { Route, Routes, useNavigate } from "react-router-dom";

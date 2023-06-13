@@ -5,6 +5,7 @@ export const RecordType = {
     income: "收入",
 }
 
+// 路由地址
 export const RoutePath = {
     PATH_PREFIX_MAIN: "/main/*",
     PATH_RECORD: "/main/record",
@@ -12,6 +13,7 @@ export const RoutePath = {
     PATH_LOGIN: "/login",
 }
 
+// 共用的消息组件
 export const commonMessage = {
     success: (msg: string) => {
         message.success(msg, 1)
@@ -27,4 +29,5 @@ export const commonMessage = {
     },
 }
 
+// 日期 & 时间格式
 export const DATE_TIME_FORMAT = "YYYY-MM-DD HH:mm:ss"

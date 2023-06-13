@@ -59,19 +59,18 @@ const Classification: React.FC<Props> = ({ ledgerId }) => {
     token: { colorBgContainer },
   } = theme.useToken();
 
-  const updateLedgerId = async function () {
-    if (!ledgerId)
-      return
-    const classifications = await cacheService.getClassificationList(ledgerId)
-    for (let i = 0; i < classifications.length; i++) {
-      const { amount, amount_rate } = await getAMountRateStr(ledgerId, classifications[i].id)
-      classifications[i].amount = amount
-      classifications[i].amount_rate = amount_rate
-    }
-    setClassification(classifications)
-  }
-
   useEffect(() => {
+    const updateLedgerId = async function () {
+      if (!ledgerId)
+        return
+      const classifications = await cacheService.getClassificationList(ledgerId)
+      for (let i = 0; i < classifications.length; i++) {
+        const { amount, amount_rate } = await getAMountRateStr(ledgerId, classifications[i].id)
+        classifications[i].amount = amount
+        classifications[i].amount_rate = amount_rate
+      }
+      setClassification(classifications)
+    }
     updateLedgerId()
   }, [ledgerId]);
 

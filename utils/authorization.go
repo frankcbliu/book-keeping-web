@@ -2,17 +2,18 @@ package utils
 
 import (
 	"book-keeping-web/conf"
-	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 const (
 	Authorization    = "Authorization"
-	TokenTime        = 30 // 默认 120 分钟
-	RefreshTokenTime = 10 // 剩余时间只剩 60 分钟以内进行刷新
+	TokenTime        = 30 * 24 // 默认 30 天
+	RefreshTokenTime = 7 * 24  // 剩余时间只剩 7 天以内进行刷新
 )
 
 func SetAuthorization(c *gin.Context, userName string, userId int) {
@@ -47,7 +48,7 @@ func generateToken(userName string, userId int) string {
 		userName,
 		userId,
 		jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(TokenTime * time.Minute)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(TokenTime * time.Hour)),
 		},
 	}
 	// 计算 token
@@ -71,8 +72,8 @@ func CheckToken(c *gin.Context, tokenString string) bool {
 	if claims, ok := token.Claims.(*myCustomClaims); ok && token.Valid {
 		c.Set("UserId", claims.UserId)
 		log.Println(claims.UserName, " expire_time: ", claims.RegisteredClaims.ExpiresAt)
-		// 如果有效期少于5min，自动延长
-		if claims.RegisteredClaims.ExpiresAt.Sub(time.Now()) <= RefreshTokenTime*time.Minute {
+		// 如果有效期少于一周，自动延长
+		if time.Until(claims.RegisteredClaims.ExpiresAt.Time) <= RefreshTokenTime*time.Hour {
 			SetAuthorization(c, claims.UserName, claims.UserId)
 		}
 	} else {

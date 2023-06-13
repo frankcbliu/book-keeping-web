@@ -2,7 +2,6 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import { Button, Card, DatePicker, Modal, Space, theme } from 'antd';
-import { useNavigate } from "react-router-dom";
 import { cacheService } from './services/cache';
 import { RecordItem } from './api/interface';
 import recordApi from './api/record';
@@ -15,12 +14,6 @@ const Record: React.FC = () => {
   const [beginTime, setBeginTime] = useState<dayjs.Dayjs | null>(dayjs().subtract(10, 'day'));
   const [endTime, setEndTime] = useState<dayjs.Dayjs | null>(dayjs());
   const [recordList, setRecordList] = useState<RecordItem[]>([]);
-
-  const navigate = useNavigate()
-
-  const onFinish = async (values: any) => {
-
-  };
 
   useEffect(() => {
     if (!beginTime || !endTime)
@@ -59,11 +52,6 @@ const Record: React.FC = () => {
       }
     })
   }
-
-  const onFinishFailed = (errorInfo: any) => {
-    localStorage.clear()
-    console.log('Failed:', errorInfo);
-  };
 
   const {
     token: { colorBgContainer },
