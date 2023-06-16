@@ -26,6 +26,7 @@ FROM golang:1.20.4 AS builder
 # 设置依赖代理
 ENV GOPROXY=https://goproxy.cn
 ENV CGO_ENABLED=1
+ENV GIN_MODE=release
 
 # 将当前目录复制到 Docker 镜像中的 /app 目录
 COPY . /app
