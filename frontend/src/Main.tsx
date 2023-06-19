@@ -31,6 +31,11 @@ const Main: React.FC = () => {
   })).concat(...FixedMenuItems)), [ledgerList]);
 
   useEffect(() => {
+    document.querySelector('meta[name="apple-mobile-web-app-capable"]')?.setAttribute('content', 'yes')
+    document.querySelector('meta[name="viewport"]')?.setAttribute('content', 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no')
+  })
+
+  useEffect(() => {
     cacheService.getLedgerList().then((ledgerList) => {
       if (!ledgerList.length) {
         navigate(RoutePath.PATH_LOGIN)
