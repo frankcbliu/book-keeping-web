@@ -30,6 +30,7 @@ ENV GIN_MODE=release
 
 # 将当前目录复制到 Docker 镜像中的 /app 目录
 COPY . /app
+COPY ./frontend/build /app/frontend/build
 
 # 把前端打包好后复制过来
 # COPY --from=frontend /app/build /app/frontend/build
