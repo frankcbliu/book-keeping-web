@@ -1,5 +1,5 @@
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import dayjs from 'dayjs';
 import { Button, Card, DatePicker, Modal, Space, theme } from 'antd';
 import { cacheService } from './services/cache';
@@ -16,9 +16,15 @@ interface LineDataItem {
   date_unix: number;
   amount: number;
 }
+
+interface SubPieChartData {
+  sub_classification: string;
+  amount: number;
+}
+
 interface PieChartData {
   classification: string;
-  sub_classification: string;
+  sub_classification: SubPieChartData[];
   amount: number;
 }
 
@@ -29,6 +35,8 @@ const Record: React.FC = () => {
   const [recordList, setRecordList] = useState<RecordItem[]>([]);
   const [lineData, setLineData] = useState<LineDataItem[]>([]);
   const [pieData, setPieData] = useState<PieChartData[]>([]);
+  const [subPieData, setSubPieData] = useState<SubPieChartData[]>([]);
+
 
   useEffect(() => {
     if (!beginTime || !endTime)
@@ -41,6 +49,7 @@ const Record: React.FC = () => {
       // // 计算折线图数据
       // calculateDateData(records)
     })
+
 
   }, [beginTime, endTime]);
 
@@ -75,36 +84,48 @@ const Record: React.FC = () => {
     }
     // 为饼图计算数据
     const calculatePieData = (recordList: RecordItem[]) => {
-      const pieData: PieChartData[] = [];
+      const pies: PieChartData[] = [];
       for (let item of recordList) {
         if (item.type !== "支出")
           continue
 
-        pieData.push({
-          'classification': item.classification,
-          'sub_classification': item.sub_classification,
-          'amount': Number(item.amount)
-        })
+        let pie: PieChartData = {
+          classification: item.classification || '其他',
+          sub_classification: [],
+          amount: Number(item.amount)
+        }
+        pie.sub_classification.push({ sub_classification: item.sub_classification || '其他', amount: Number(item.amount) })
+        pies.push(pie)
       }
       // 合并相同类型的账单
-      const result: PieChartData[] = Object.values(pieData.reduce((acc: Record<string, PieChartData>, curr) => {
+      const result: PieChartData[] = Object.values(pies.reduce((acc: Record<string, PieChartData>, curr) => {
         if (acc[curr.classification]) {
           acc[curr.classification].amount += curr.amount;
+          acc[curr.classification].sub_classification = acc[curr.classification].sub_classification.concat(curr.sub_classification);
         } else {
           acc[curr.classification] = { classification: curr.classification, amount: curr.amount, sub_classification: curr.sub_classification };
         }
         acc[curr.classification].amount = Math.floor(acc[curr.classification].amount);
         return acc;
       }, {}));
+
+      if (result.length <= 0)
+        return
+
       // 排序
-      console.log(result)
+      console.log('setPieData', result)
       setPieData(result)
     }
 
     calculateDateData(recordList)
     calculatePieData(recordList)
+
   }, [recordList])
 
+
+  useEffect(() => {
+    pieDataRef.current = pieData;
+  }, [pieData])
 
   const format = (date: string) => {
     return dayjs(date).format("YYYY-MM-DD")
@@ -146,12 +167,9 @@ const Record: React.FC = () => {
     },
   };
 
-
-  const pieConfig = {
-    appendPadding: 10,
-    data: pieData,
+  const commonConfig = {
     angleField: "amount",
-    colorField: "classification",
+    appendPadding: 10,
     radius: 1,
     innerRadius: 0.5,
     label: {
@@ -164,20 +182,90 @@ const Record: React.FC = () => {
       }
     },
     interactions: [{ type: "element-selected" }, { type: "element-active" }],
+  }
+
+  const commonStyle = {
+    whiteSpace: "pre-wrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis"
+  }
+
+  const pieConfig = {
+    ...commonConfig,
+    data: pieData,
+    colorField: "classification",
     statistic: {
       title: false as const,
       content: {
-        style: {
-          whiteSpace: "pre-wrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis"
-        },
+        style: commonStyle,
         formatter: function formatter() {
-          return `total\n134`;
+          // 统计所有支出
+          let total_res = 0;
+          for (let i = 0; i < pieData.length; i++) {
+            const element = pieData[i];
+            total_res += element.amount;
+          }
+          return '' + total_res;
         }
       }
     }
   };
+
+  const subPieConfig = {
+    ...commonConfig,
+    data: subPieData,
+    colorField: "sub_classification",
+    statistic: {
+      title: false as const,
+      content: {
+        style: commonStyle,
+        formatter: function formatter() {
+          // 统计所有支出
+          let total_res = 0;
+          for (let i = 0; i < subPieData.length; i++) {
+            const element = subPieData[i];
+            total_res += element.amount;
+          }
+          return '' + total_res;
+        }
+      }
+    }
+  };
+
+  const pieDataRef = useRef<PieChartData[]>();
+
+  const onPieClick = (...args: any[]) => {
+    console.log(pieConfig, subPieConfig)
+    if (args[0].type !== "element:click") {
+      return
+    }
+    if (!pieDataRef.current) {
+      return
+    }
+    for (let i = 0; i < pieDataRef.current.length; i++) {
+      const element = pieDataRef.current[i];
+      console.log(element.classification, args[0].data.data.classification)
+      if (element.classification === args[0].data.data.classification) {
+        // 打印当前点击的元素
+        console.log(element.sub_classification)
+        // 合并相同类型的账单
+        const result: SubPieChartData[] = Object.values(element.sub_classification.reduce((acc: Record<string, SubPieChartData>, curr) => {
+          if (acc[curr.sub_classification]) {
+            acc[curr.sub_classification].amount += curr.amount;
+          } else {
+            acc[curr.sub_classification] = { sub_classification: curr.sub_classification, amount: curr.amount };
+          }
+          acc[curr.sub_classification].amount = Math.floor(acc[curr.sub_classification].amount);
+          return acc;
+        }, {}));
+
+        // 排序
+        console.log('sort res', result)
+        setSubPieData(result)
+        break
+      }
+    }
+  }
 
   return (
     <div style={{ backgroundColor: colorBgContainer }}>
@@ -202,7 +290,11 @@ const Record: React.FC = () => {
         <Line {...lineConfig} />
       </Card>
       <Card title="支出类型" style={{ height: '90%' }}>
-        <Pie {...pieConfig} />
+        <Pie {...pieConfig} onReady={(plot) => {
+          plot.on('element:click', onPieClick);
+        }}
+        />
+        <Pie {...subPieConfig} />
       </Card>
       <Card style={{ height: '90%' }}>
         {
